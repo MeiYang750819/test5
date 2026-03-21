@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💼 勇者入職試煉</title>
+    
+    <meta property="og:title" content="🛠️｜MYs系統｜新手村登入區" />
+    <meta property="og:description" content="闖關冒險即將開始！詳閱任務指南並完成關卡，解鎖職場新身分！" />
+    <meta property="og:image" content="https://meiyang750819.github.io/test4/assets/img1/MYs_logo_去背1.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://meiyang750819.github.io/test4/" />
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="nav.css">
+    <script src="game-engine.js"></script>
+</head>
+<body class="page-2">
+
+    <div id="lightbox" onclick="this.style.display='none'">
+        <img id="lightbox-img" src="">
+    </div>
+
+    <div class="sticky-bar" id="block-identity">
+        <span class="dyn-company">載入中...</span>　｜　<span class="dyn-team">載入中...</span>　｜　<span class="dyn-type">載入中...</span>　｜　<span class="dyn-name">載入中...</span>
+    </div>
+
+    <div class="sticky-bar" id="block-status-1" style="top: 45px;">
+        <span id="rank-text">載入中...</span>
+    </div>
+
+    <div class="sticky-bar" id="block-status-2" style="top: 90px;">
+        <span id="status-tag">載入中...</span>
+    </div>
+
+    <div class="sticky-bar" id="block-status-3" style="top: 135px;">
+        <span id="score-label" style="color:#ff8a8a;">🏆 冒險積分：</span><span id="score-text">0分</span>
+        <div class="progress-track">
+            <div class="progress-fill" id="score-fill" style="width: 0%;"></div>
+        </div>　｜　<span id="prog-label" style="color:#ff8a8a;">⚔️ 攻略進度：</span><span id="prog-val">0%</span>
+        <div class="progress-track">
+            <div class="progress-fill" id="prog-fill" style="width: 0%;"></div>
+        </div>
+    </div>
+
+    <nav class="nav-tabs" style="top: 180px;">
+        <a href="index.html" class="tab-btn">📜 冒險指南</a>
+        <a href="page2.html" class="tab-btn active">🏹 鍛造秘笈</a>
+        <a href="page3.html" class="tab-btn">⚔️ 勇者試煉</a>
+    </nav>
+
+    <main class="tab-content active">
+
+        <details>
+            <summary class="main-summary">⏫ 上傳檔案教學</summary>
+            <div class="details-body" style="white-space: normal;">
+                
+                <div style="white-space: pre-wrap; margin-bottom: 15px; color: var(--details-textColor);">■ 上傳個人準備文件,請務必參考正確及錯誤範例.
+■ 檔案須符合本公司限定規格.
+■ 若規格錯誤則退件再重新上傳.</div>
+
+                <strong style="display: block; font-size: 14px; color: var(--details-textColor); margin-bottom: 5px;">🍎 手機系統-IOS</strong>
+                <div style="white-space: pre-wrap; line-height: 1.8; font-weight: bold; color: var(--details-textColor); background: var(--sample-boxBgColor); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 1px 3px rgba(0,0,0,0.3);">點擊備忘錄
+↓
+點擊右下角
+↓
+點擊相機圖示
+↓
+點擊掃描文件  
+↓
+開始掃描
+↓
+存檔雲端上傳</div>
+
+                <strong style="display: block; font-size: 14px; color: var(--details-textColor); margin-bottom: 5px;">🤖 手機系統-Android</strong>
+                <div style="white-space: pre-wrap; line-height: 1.8; font-weight: bold; color: var(--details-textColor); background: var(--sample-boxBgColor); padding: 15px; border-radius: 8px; margin-bottom: 5px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 1px 3px rgba(0,0,0,0.3);">點擊雲端硬碟
+↓
+點擊＋
+↓
+點擊掃描文件
+↓
+開始掃描
+↓
+存檔雲端上傳</div>
+
+            </div>
+        </details>
+
+        <details>
+            <summary class="main-summary" onclick="GameEngine.unlock(event, 'pg2-m-1', 'large_fold')">👀 範例對照區域</summary>
+            <div class="details-body" style="white-space: normal;">
+                <strong style="display: block; font-size: 14px; color: var(--details-textColor); margin-bottom: 8px;">📹 iPhone備忘錄掃描文件操作示範</strong>
+                <figure class="sample-box" style="margin-top: 0; margin-bottom: 15px; padding: 5px;">
+                    <video controls preload="metadata" style="max-width: 100%; border-radius: 4px; display: block;">
+                        <source src="assets/ios掃描範例.mp4" type="video/mp4">
+                    </video>
+                </figure>
+                
+                <div style="margin-top: 5px; margin-bottom: 10px; font-weight: bold; color: var(--text-green);">以下為 ✅ 正確範例對照</div>
+                <div class="horizontal-scroll">
+                    <figure class="sample-box" onclick="zoomImg(this)">
+                        <img class="sample-img" src="assets/體檢報告範本.jpg" alt="❗️體檢報告範本.jpg">
+                        <figcaption class="sample-cap">✅ 正確範例-體檢報告上傳規格</figcaption>
+                    </figure>
+                    <figure class="sample-box" onclick="zoomImg(this)">
+                        <img class="sample-img" src="assets/身分證範本-正面.jpg" alt="❗️身分證範本-正面.jpg">
+                        <figcaption class="sample-cap">✅ 正確範例-身分證正面範本</figcaption>
+                    </figure>
+                    <figure class="sample-box" onclick="zoomImg(this)">
+                        <img class="sample-img" src="assets/身分證範本-背面.png" alt="❗️身分證範本-背面.png">
+                        <figcaption class="sample-cap">✅ 正確範例-身分證背面範本</figcaption>
+                    </figure>
+                    <figure class="sample-box" onclick="zoomImg(this)">
+                        <img class="sample-img" src="assets/薪酬銀行範本.jpg" alt="❗️薪酬銀行範本.jpg">
+                        <figcaption class="sample-cap">✅ 正確範例-薪資戶頭範本</figcaption>
+                    </figure>
+                </div>
+                
+                <div style="margin-top: 15px; margin-bottom: 10px; font-weight: bold; color: var(--text-red);">以下為 ❌ 錯誤範例對照</div>
+                <div class="horizontal-scroll">
+                    <figure class="sample-box" onclick="zoomImg(this)">
+                        <img class="sample-img" src="assets/錯誤範例-1.jpg" alt="❗️錯誤範例-1.jpg">
+                        <figcaption class="sample-cap">❌ 錯誤範例-需要好閱讀</figcaption>
+                    </figure>
+                    <figure class="sample-box" onclick="zoomImg(this)">
+                        <img class="sample-img" src="assets/錯誤範例-2.jpg" alt="❗️錯誤範例-2.jpg">
+                        <figcaption class="sample-cap">❌ 錯誤範例-四角未對四個角</figcaption>
+                    </figure>
+                    <figure class="sample-box" onclick="zoomImg(this)">
+                        <img class="sample-img" src="assets/錯誤範例-3.jpg" alt="❗️錯誤範例-3.jpg">
+                        <figcaption class="sample-cap">❌ 錯誤範例-有小手手入鏡</figcaption>
+                    </figure>
+                    <figure class="sample-box" onclick="zoomImg(this)">
+                        <img class="sample-img" src="assets/戶頭錯誤範例.jpg" alt="❗️戶頭錯誤範例.jpg">
+                        <figcaption class="sample-cap">❌ 錯誤範例-需要好閱讀</figcaption>
+                    </figure>
+                </div>
+            </div>
+        </details>
+    </main>
+
+    <footer class="footer">
+        <img src="assets/MYs_logo_去背.png" alt="MYs Logo" class="footer-logo">
+        © Copyright 2026 MYs System-b1.0.0-02-22-2026-115
+    </footer>
+
+    <script>
+        const fetchedData = {
+            companyName: "MYs studio", 
+            team: "外場團隊",
+            type: "兼職",
+            userName: "測試員"
+        };
+
+        function applyData(data) {
+            document.querySelectorAll('.dyn-company').forEach(el => el.innerText = data.companyName);
+            document.querySelectorAll('.dyn-team').forEach(el => el.innerText = data.team);
+            document.querySelectorAll('.dyn-type').forEach(el => el.innerText = data.type);
+            document.querySelectorAll('.dyn-name').forEach(el => el.innerText = data.userName);
+        }
+
+        function zoomImg(el) {
+            const img = el.querySelector('img');
+            if(img) {
+                document.getElementById('lightbox-img').src = img.src;
+                document.getElementById('lightbox').style.display = 'flex';
+            }
+        }
+
+        window.addEventListener('load', () => { 
+            applyData(fetchedData); 
+            if (typeof GameEngine !== 'undefined') {
+                GameEngine.init(); 
+            }
+        });
+    </script>
+</body>
+</html>
