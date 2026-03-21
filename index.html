@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💼 勇者入職試煉</title>
+
+    <meta property="og:title" content="🛠️｜MYs系統｜新手村登入區" />
+    <meta property="og:description" content="闖關冒險即將開始！詳閱任務指南並完成關卡，解鎖職場新身分！" />
+    <meta property="og:image" content="https://meiyang750819.github.io/test4/assets/img1/MYs_logo_去背1.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://meiyang750819.github.io/test4/" />
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="nav.css">
+    <script src="game-engine.js"></script>
+</head>
+<body class="page-1">
+
+    <div class="sticky-bar" id="block-identity">
+        <span class="dyn-company">載入中...</span>　｜　<span class="dyn-team">載入中...</span>　｜　<span class="dyn-type">載入中...</span>　｜　<span class="dyn-name">載入中...</span>
+    </div>
+
+    <div class="sticky-bar" id="block-status-1" style="top: 45px;">
+        <span id="rank-text">載入中...</span>
+    </div>
+
+    <div class="sticky-bar" id="block-status-2" style="top: 90px;">
+        <span id="status-tag">載入中...</span>
+    </div>
+
+    <div class="sticky-bar" id="block-status-3" style="top: 135px;">
+        <span id="score-label" style="color:#ff8a8a;">🏆 冒險積分：</span><span id="score-text">0分</span>
+        <div class="progress-track"><div class="progress-fill" id="score-fill" style="width: 0%;"></div></div>
+        　｜　<span id="prog-label" style="color:#ff8a8a;">⚔️ 攻略進度：</span><span id="prog-val">0%</span>
+        <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width: 0%;"></div></div>
+    </div>
+
+    <nav class="nav-tabs" style="top: 180px;">
+        <a href="javascript:void(0)" onclick="location.reload();" class="tab-btn active">📜 冒險指南</a>
+        <a href="page2.html" class="tab-btn">🏹 鍛造秘笈</a>
+        <a href="page3.html" class="tab-btn">⚔️ 勇者試煉</a>
+    </nav>
+
+
+    <main class="tab-content active">
+
+        <details>
+            <summary class="main-summary">🔐 隱私聲明公約</summary>
+            
+            <details>
+                <summary class="sub-summary">【本表單聲明啟示】</summary>
+                <div class="details-body">■ 此表單僅限錄取者使用.
+■ 若非上述身分請立即退出此表單.
+■ 此表所有權歸屬<span class="dyn-company">本公司</span>.</div>
+            </details>
+
+            <details>
+                <summary class="sub-summary">【填寫前須知事項】</summary>
+                <div class="details-body">■ 請依照表單順序執行填寫.
+■ 請先閱讀後有疑問再發問,勿未查看直接詢問.
+■ 填寫表單若遇到困難請向人資承辦提出職場禮貌詢問.
+■ 上傳之個人資料悉依個資相關法令規範辦理保存.
+■ 每個階段未經管理員審核通過,無法解鎖下一階段.
+■ <span class="dyn-company">本公司</span>-此表單簡稱本公司.</div>
+            </details>
+        </details>
+
+
+        <details>
+            <summary class="main-summary" onclick="GameEngine.unlock(event, 'faq_main', 'large_fold')">💡 常見提問回應</summary>
+            
+            <details>
+                <summary class="sub-summary" onclick="GameEngine.unlock(event, 'faq_sub1', 'explore1')">💰 薪資轉帳相關</summary>
+                <div class="details-body">1. 本公司配合薪資轉帳銀行:
+❗️台新國際商業銀行.
+
+2. 是否能接受數位帳戶:
+❗️不接受.
+本公司僅受理綜合活期儲蓄存款及活期性存款,
+不接受上述以外的任何類型之存款帳戶.
+
+3. 已有上述符合之帳戶是否還要開立帳戶:
+❗️毋須開立.
+
+4. 若沒有帳戶是否要去臨櫃開立:
+❗️毋須開立.
+本公司與該行是薪轉戶專案,
+將提供限定證明去辦理開戶,
+須完成報到程序後給予.
+
+5. 是否能使用別間銀行存摺:
+❗️不能.</div>
+            </details>
+
+            <details>
+                <summary class="sub-summary" onclick="GameEngine.unlock(event, 'faq_sub2', 'explore2')">🩺 體檢報告相關</summary>
+                <div class="details-body">1. 是否可以僅繳交一份體、健檢報告:
+❗️若體檢報告內有包含下列:
+食品從業人員體檢及一般勞工體格檢查的項目,
+那就可以僅繳交一份,但請注意！
+食品從業人員報告年限是要今年度,
+逾期請重新檢查.
+
+2. 傷寒必須要檢查.
+❗️請重新或補做檢查項目.
+
+3. 是否可使用之前任職公司的體檢報告:
+❗️回應與第一則則相同.
+
+4. 查詢認證體檢醫院機構:
+<a href="https://hrpts.osha.gov.tw/Home/CertifiedHospInfoSearch" target="_blank" style="color:#8ab4f8; text-decoration:underline; font-weight:bold;">❗️請點擊此文字連結查詢</a>
+
+5. 體檢費用:
+❗️第一年自行負擔,第二年公司負責.</div>
+            </details>
+        </details>
+
+
+        <details>
+            <summary class="main-summary" onclick="GameEngine.unlock(event, 'onboard_main', 'large_fold')">🏛️ 入職報到說明</summary>
+            <details>
+                <summary class="sub-summary" onclick="GameEngine.unlock(event, 'onboard_sub1', 'random_weapon')">【入職報到五大文件】</summary>
+                <div class="details-body">■ 報到前必須準備五大文件,當日要繳交:
+    - 經認證醫療機構 -勞工體格檢查報告.
+    - 經認證醫療機構 -食品從業人員體檢報告.
+    - 兩吋照片一張.
+    - 前份工作健保轉出證明.
+    - 前份工作離職證明.
+■ 準備齊全後再送出表單且截圖回報.
+■ 主動並積極回報處理狀況.</div>
+            </details>
+            <details>
+                <summary class="sub-summary" onclick="GameEngine.unlock(event, 'onboard_sub2', 'explore_armor')">【報到文件用途說明】</summary>
+                <div class="details-body">1. 一般勞工體格檢查報告:
+❗️依據《職業安全衛生法》§20
+勞工健康保護規則§16~17
+⏍ 未滿40歲,提交的體檢報告必須在5年內.
+⏍ 40歲以上,未滿65歲,提交的體檢報告必須在3年內.
+⏍ 年滿65歲,提交的體檢報告必須在1年內.
+符合上述原則,可以不必再實施體檢.
+
+2. 食品從業人員體檢報告:
+❗️依據《食品安全衛生管理法》§8
+食品良好衛生規範準則§5
+檢查期限:本年度-近一年.
+
+3. 兩吋照片一張:
+❗️用於個人資料建檔使用.
+
+4. 前份工作健保轉出證明:
+❗️檢核後加保用.
+
+5. 前份工作離職證明:
+❗️檢核用.</div>
+            </details>
+        </details>
+
+
+        <details>
+            <summary class="main-summary">🛡️ 退件說明指南</summary>
+            <div class="details-body">■ 狀態顯示說明：
+⚔️ 狩獵裝備中-代表「單份資料已上傳」.
+⚖️ 提交公會審查-代表「資料傳完,等待審核」.
+⏳ 系統鑑定中-代表「人資正在審核中」.
+❌ 強化失敗-代表「被退件,需重新補件」.
+
+■ 若顯示❌ 強化失敗,請修正後重新上傳:
+    - 文字模糊 (鑑定失敗)-光線不足或對焦不準.
+    - 切到邊角 (屬性殘缺)-文件四個角未完整入鏡.
+    - 雜物過多 (異物侵入)-背景太亂或手指入鏡.
+
+💡 解決方案:請參考🏹 鍛造秘笈掃描重新打造.</div>
+        </details>
+
+
+        <details>
+            <summary class="main-summary">🏅 積極度之評核</summary>
+            <div class="details-body"><span style="color: #FFFFFF;">💎 [ 巔峰神話 ]：101分以上</span>
+👑 [ 卓越表現 ]：96-100分
+<span class="text-green">🟢 [ 表現良好 ]：80-95分</span>
+<span class="text-lightblue">⚠️ [ 有待觀察 ]：60-79分</span>
+<span class="text-lightred">🛑 [ 資格重評 ]：41-59分</span>
+<span class="text-purple">💀 [ 建議汰換 ]：40分以下</span></div>
+        </details>
+
+    </main>
+
+    <footer class="footer">
+        <img src="assets/MYs_logo_去背.png" alt="MYs Logo" class="footer-logo">
+        © Copyright 2026 MYs System-b1.0.0-03-02-2026-115
+    </footer>
+
+    <script>
+        const fetchedData = { 
+            companyName: "MYs studio", 
+            team: "外場團隊", 
+            type: "兼職", 
+            userName: "測試員" 
+        };
+
+        function applyData(data) {
+            document.querySelectorAll('.dyn-company').forEach(el => el.innerText = data.companyName);
+            document.querySelectorAll('.dyn-team').forEach(el => el.innerText = data.team);
+            document.querySelectorAll('.dyn-type').forEach(el => el.innerText = data.type);
+            document.querySelectorAll('.dyn-name').forEach(el => el.innerText = data.userName);
+        }
+
+        window.addEventListener('load', () => {
+            applyData(fetchedData);
+            if (typeof GameEngine !== 'undefined') {
+                GameEngine.init();
+            }
+        });
+    </script>
+</body>
+</html>
