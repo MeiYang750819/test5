@@ -1,8 +1,8 @@
 /* ================================================================
-   【 ⚙️ GAME ENGINE - 完美展開與防失憶版 】
+   【 ⚙️ GAME ENGINE - 終極防失憶與不縮減版 】
    ================================================================ */
 
-// 🌟 1. 雙重參數攔截與失憶症治癒邏輯
+// 🌟 雙重參數攔截與失憶症治癒邏輯
 const urlParams = new URLSearchParams(window.location.search);
 let currentUser = urlParams.get('uid') || urlParams.get('id');
 
@@ -15,7 +15,7 @@ if (currentUser) {
 
 const GameEngine = {
     config: {
-        apiUrl: "https://script.google.com/macros/s/AKfycbyZu8UpQXk4KWTTlleT5F0gqxIG4XakMhE4m_svGUXJ_uSV_6rVB5_OiPUVH2VKn-BZZA/exec",
+        apiUrl: "https://script.google.com/macros/s/AKfycbwV_51l1vwKoJf0rn60vHYW0jf3Tj4QsNXsKl9LxgXn9xlt_vwHqfQEc-svZigleGtVYQ/exec",
         uid: currentUser
     },
 
@@ -90,15 +90,16 @@ const GameEngine = {
     init() {
         document.querySelectorAll('details').forEach(el => el.removeAttribute('open'));
 
-        // 🌟 自動為導覽列補上 ID，防止跳頁失憶
+        // 🌟 自動為上方導覽列補上 ID，防止切換到 page2 時發生失憶
         document.querySelectorAll('.tab-btn').forEach(btn => {
             if (btn.href && !btn.href.includes('javascript')) {
                 const url = new URL(btn.href, window.location.href);
-                url.searchParams.set('uid', this.config.uid);
+                url.searchParams.set('id', currentUser);
                 btn.href = url.toString();
             }
         });
 
+        // 讀取個人專屬進度
         try {
             const saved = localStorage.getItem(this.getStorageKey());
             if (saved) {
@@ -139,7 +140,7 @@ const GameEngine = {
         style.innerHTML = `
             @keyframes shinyUpdate {
                 0%, 100% { filter: brightness(1); transform: scale(1); }
-                50% { filter: brightness(1.5); transform: scale(1.05); color: #ffffff; text-shadow: 0 0 8px #fbbf24; }
+                50% { filter: brightness(1.5); transform: scale(1.2); color: #ffffff; text-shadow: 0 0 8px #fbbf24; }
             }
             .shiny-effect { animation: shinyUpdate 1s ease-in-out; display: inline-block; }
             .game-toast {
@@ -269,6 +270,26 @@ const GameEngine = {
         return false;
     },
 
+    // 🌟 隱藏彩蛋解鎖邏輯
+    unlock(event, id, action, title, scoreGain) {
+        if (typeof title === 'number') {
+            scoreGain = title;
+        }
+        if (this.state.achievements.includes(id)) return;
+        
+        this.state.achievements.push(id);
+        this.save();
+        
+        if (scoreGain > 0) {
+            this.state.score += scoreGain;
+            this.state.scoreDetails.base += scoreGain;
+            this.createFloatingText(event, `+${scoreGain}`);
+            
+            fetch(`${this.config.apiUrl}?action=updateScore&uid=${encodeURIComponent(this.config.uid)}&field=${encodeURIComponent(id)}&score=${encodeURIComponent(scoreGain)}`);
+            setTimeout(() => { this.updateUI(true); }, 1000);
+        }
+    },
+
     toggleTrial5Score(event, id) {
         const isChecked = event.target.checked;
         const gain = 8;
@@ -282,8 +303,7 @@ const GameEngine = {
             this.state.score -= gain;
             this.state.scoreDetails.base -= gain;
         }
-        this.save(); 
-        this.updateUI(true);
+        this.save(); this.updateUI(true);
     },
 
     createFloatingText(e, text) {
@@ -464,7 +484,7 @@ const GameEngine = {
         
         this.updateButtonStyles();
 
-        // 🌟 嚴格綁定：只有提交任務才會飄出加分數字，並送往雲端！
+        // 🌟 嚴格控制：只有在提交任務按鈕按下時，才會飄出過關分數！
         if (tData.scoreGain > 0 && event) {
             this.createFloatingText(event, `+${tData.scoreGain}`);
         }
@@ -588,7 +608,7 @@ const GameEngine = {
                 
                 block.querySelectorAll('input').forEach(i => {
                     if (i.type === 'checkbox') {
-                        i.checked = true; 
+                        i.checked = true; // 🌟 強制打滿勾勾
                     }
                     i.disabled = true;
                     if (i.type === 'checkbox' || i.type === 'radio' || i.type === 'file') {
