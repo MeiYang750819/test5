@@ -1,12 +1,10 @@
 /* ================================================================
-   【 ⚙️ GAME ENGINE - 終極防失憶與不縮減版 】
+   【 ⚙️ GAME ENGINE - 真實雲端上傳與防失憶完美版 】
    ================================================================ */
 
-// 🌟 雙重參數攔截與失憶症治癒邏輯
 const urlParams = new URLSearchParams(window.location.search);
 let currentUser = urlParams.get('uid') || urlParams.get('id');
 
-// 如果網址有帶 ID，死死鎖進瀏覽器深處；如果沒有，從深處拿出來
 if (currentUser) {
     localStorage.setItem('hero_current_id', currentUser);
 } else {
@@ -15,7 +13,7 @@ if (currentUser) {
 
 const GameEngine = {
     config: {
-        apiUrl: "https://script.google.com/macros/s/AKfycbwV_51l1vwKoJf0rn60vHYW0jf3Tj4QsNXsKl9LxgXn9xlt_vwHqfQEc-svZigleGtVYQ/exec",
+        apiUrl: "https://script.google.com/macros/s/AKfycbz18MlQSnFETW9q80SWGixDg074px2_GxRbvS5RoFfrCiUsLO9T7j9aTEikeWV9z9Px7g/exec",
         uid: currentUser
     },
 
@@ -42,12 +40,7 @@ const GameEngine = {
         bankStatus: null,
         appointmentTime: "等待公會發布...",
         appointmentLocation: "等待公會發布...",
-        scoreDetails: {
-            base: 0,
-            earlyBird: 0,
-            delayPenalty: 0,
-            hrEval: 0
-        },
+        scoreDetails: { base: 0, earlyBird: 0, delayPenalty: 0, hrEval: 0 },
         hasSeenDoomFlash: false
     },
 
@@ -82,15 +75,12 @@ const GameEngine = {
         6: { progGain: 12, loc: '👑 榮耀殿堂', scoreGain: 0 }
     },
 
-    // 🌟 產生專屬記憶櫃鑰匙
-    getStorageKey() {
-        return 'hero_progress_' + this.config.uid;
-    },
+    getStorageKey() { return 'hero_progress_' + this.config.uid; },
 
     init() {
         document.querySelectorAll('details').forEach(el => el.removeAttribute('open'));
 
-        // 🌟 自動為上方導覽列補上 ID，防止切換到 page2 時發生失憶
+        // 防止跳頁失憶
         document.querySelectorAll('.tab-btn').forEach(btn => {
             if (btn.href && !btn.href.includes('javascript')) {
                 const url = new URL(btn.href, window.location.href);
@@ -99,23 +89,16 @@ const GameEngine = {
             }
         });
 
-        // 讀取個人專屬進度
         try {
             const saved = localStorage.getItem(this.getStorageKey());
-            if (saved) {
-                this.state = Object.assign({}, this.state, JSON.parse(saved));
-            }
-        } catch (e) {
-            localStorage.removeItem(this.getStorageKey());
-        }
+            if (saved) this.state = Object.assign({}, this.state, JSON.parse(saved));
+        } catch (e) {}
 
         this.injectGlobalCSS();
 
         setTimeout(() => {
             document.querySelectorAll('input[type="checkbox"]').forEach(chk => {
-                if (this.state.checkboxes && this.state.checkboxes[chk.id]) {
-                    chk.checked = true;
-                }
+                if (this.state.checkboxes && this.state.checkboxes[chk.id]) chk.checked = true;
                 chk.addEventListener('change', (e) => {
                     if (!this.state.checkboxes) this.state.checkboxes = {};
                     this.state.checkboxes[e.target.id] = e.target.checked;
@@ -140,7 +123,7 @@ const GameEngine = {
         style.innerHTML = `
             @keyframes shinyUpdate {
                 0%, 100% { filter: brightness(1); transform: scale(1); }
-                50% { filter: brightness(1.5); transform: scale(1.2); color: #ffffff; text-shadow: 0 0 8px #fbbf24; }
+                50% { filter: brightness(1.5); transform: scale(1.2); color: #ffffff; text-shadow: 0 0 15px #fbbf24; } /* 🌟 恢復超級閃亮 1.2倍 */
             }
             .shiny-effect { animation: shinyUpdate 1s ease-in-out; display: inline-block; }
             .game-toast {
@@ -161,6 +144,7 @@ const GameEngine = {
                 100% { opacity: 0; transform: translateY(-50px) scale(1.5); }
             }
 
+            input[type="date"] { color-scheme: dark; color: white; } /* 🌟 日期強制白字 */
             input.locked-input {
                 -webkit-appearance: none !important;
                 -moz-appearance: none !important;
@@ -185,6 +169,7 @@ const GameEngine = {
 
             if (res.status === 'success' && res.data) {
                 const d = res.data;
+                const oldScore = this.state.score; // 🌟 紀錄舊分數用來判斷要不要閃
 
                 this.state.appointmentTime = d.appointmentTime;
                 this.state.appointmentLocation = d.appointmentLocation;
@@ -233,7 +218,8 @@ const GameEngine = {
                 }
 
                 this.save();
-                this.updateUI(true);
+                // 🌟 嚴格判定：分數變高才會閃光！
+                this.updateUI(this.state.score > oldScore);
             }
         } catch (err) { console.error("同步失敗:", err); }
     },
@@ -270,11 +256,10 @@ const GameEngine = {
         return false;
     },
 
-    // 🌟 隱藏彩蛋解鎖邏輯
-    unlock(event, id, action, title, scoreGain) {
-        if (typeof title === 'number') {
-            scoreGain = title;
-        }
+    // 🌟 彩蛋綁定在 Checkbox 打勾時飄分
+    unlock(event, id, scoreGain) {
+        const chk = event.target;
+        if (!chk.checked) return; // 沒打勾不給分
         if (this.state.achievements.includes(id)) return;
         
         this.state.achievements.push(id);
@@ -362,10 +347,21 @@ const GameEngine = {
         this.updateDateControls();
         this.updateButtonStyles();
         
+        // 🌟 更新第四關的前線營開啟時間與報到時間
         const timeEl = document.getElementById('dyn-apt-time');
         const locEl = document.getElementById('dyn-apt-loc');
+        const openEl = document.getElementById('dyn-open-time');
+        
         if (timeEl) timeEl.innerText = this.state.appointmentTime;
         if (locEl) locEl.innerText = this.state.appointmentLocation;
+        
+        if (openEl && this.state.appointmentTime && !this.state.appointmentTime.includes("等待")) {
+            const aptDateStr = this.state.appointmentTime.replace(/-/g, '/');
+            const openTime = new Date(aptDateStr);
+            openTime.setDate(openTime.getDate() - 1);
+            openTime.setHours(17, 0, 0, 0); // 前一天下午 17:00
+            openEl.innerText = openTime.getFullYear() + "-" + String(openTime.getMonth()+1).padStart(2,'0') + "-" + String(openTime.getDate()).padStart(2,'0') + " 17:00";
+        }
     },
 
     updateDateControls() {
@@ -387,22 +383,6 @@ const GameEngine = {
                 }
             }
         });
-
-        const changeInput = document.getElementById('input-change-date');
-        const changeReason = document.getElementById('input-change-reason');
-        const changeBtn = document.getElementById('btn-lock-change');
-        
-        if (changeInput && changeBtn && this.state.changeDateLocked) {
-            changeInput.type = 'text'; changeInput.value = this.state.changeDate || "";
-            changeInput.disabled = true; changeInput.classList.add('locked-input');
-
-            if (changeReason) {
-                changeReason.value = this.state.changeReason || "";
-                changeReason.disabled = true; changeReason.classList.add('locked-input');
-            }
-
-            changeBtn.innerText = "已送出"; changeBtn.disabled = true; changeBtn.style.opacity = "0.5";
-        }
     },
 
     lockDate(type) {
@@ -413,57 +393,58 @@ const GameEngine = {
         const confirmLock = confirm("鎖定後不可修改，確定要鎖定嗎？");
         if (!confirmLock) return;
 
-        const parts = val.split('-');
-        let formattedVal = val;
-        if (parts.length === 3) { formattedVal = `${parts[0]}年${parts[1]}月${parts[2]}日`; }
-
-        if (type === 'exam') { this.state.examDate = formattedVal; this.state.examDateLocked = true; }
-        else if (type === 'result') { this.state.resultDate = formattedVal; this.state.resultDateLocked = true; }
-        else if (type === 'bank') { this.state.bankDate = formattedVal; this.state.bankDateLocked = true; }
+        // 🌟 統一儲存 YYYY-MM-DD 格式，不再自動轉換
+        if (type === 'exam') { this.state.examDate = val; this.state.examDateLocked = true; }
+        else if (type === 'result') { this.state.resultDate = val; this.state.resultDateLocked = true; }
+        else if (type === 'bank') { this.state.bankDate = val; this.state.bankDateLocked = true; }
         
         this.save(); this.updateUI(false);
-        fetch(`${this.config.apiUrl}?action=lockDate&uid=${encodeURIComponent(this.config.uid)}&dateType=${type}&dateValue=${encodeURIComponent(formattedVal)}`);
+        fetch(`${this.config.apiUrl}?action=lockDate&uid=${encodeURIComponent(this.config.uid)}&dateType=${type}&dateValue=${encodeURIComponent(val)}`);
     },
 
     requestChange() {
         const dateVal = document.getElementById('input-change-date').value;
-        const reasonVal = document.getElementById('input-change-reason') ? document.getElementById('input-change-reason').value : '';
+        const reasonVal = document.getElementById('input-change-reason').value;
         
-        if (!dateVal || !reasonVal) { alert("請填寫預計日期與改期原因！"); return; }
+        // 🌟 嚴格防呆：只按日期不填原因絕對不給過
+        if (!dateVal || !reasonVal) { 
+            alert("⚠️ 勇者請注意\n預計日期與改期原因皆為必填項目！"); 
+            return; 
+        }
         
-        const confirmLock = confirm("確定要送出改期申請嗎？");
+        const confirmLock = confirm("確定要送出改期申請嗎？系統將自動扣減積分！");
         if (!confirmLock) return;
-
-        const parts = dateVal.split('-');
-        let formattedVal = dateVal;
-        if (parts.length === 3) { formattedVal = `${parts[0]}年${parts[1]}月${parts[2]}日`; }
 
         alert("🚨 已送出申請，請私訊人資承辦，核准後將為您解鎖。");
         
-        this.state.changeDate = formattedVal;
-        this.state.changeReason = reasonVal;
-        this.state.changeDateLocked = true;
-        this.save(); this.updateUI(false);
+        const changeInput = document.getElementById('input-change-date');
+        const reasonInput = document.getElementById('input-change-reason');
+        const changeBtn = document.getElementById('btn-lock-change');
         
-        fetch(`${this.config.apiUrl}?action=lockDate&uid=${encodeURIComponent(this.config.uid)}&dateType=change&dateValue=${encodeURIComponent(formattedVal)}&reason=${encodeURIComponent(reasonVal)}`);
+        changeInput.type = 'text'; changeInput.disabled = true; changeInput.classList.add('locked-input');
+        reasonInput.disabled = true; reasonInput.classList.add('locked-input');
+        changeBtn.innerText = "已送出"; changeBtn.disabled = true; changeBtn.style.opacity = "0.5";
+        
+        fetch(`${this.config.apiUrl}?action=lockDate&uid=${encodeURIComponent(this.config.uid)}&dateType=change&dateValue=${encodeURIComponent(dateVal)}&reason=${encodeURIComponent(reasonVal)}`);
     },
 
     completeTrial(event, trialNum) {
         if (this.state.currentTrial >= trialNum) return;
         
+        // 🌟 第四關遲到無情扣分機制
         if (trialNum === 4) {
             const apt = this.state.appointmentTime;
             if (!apt || apt.includes("等待")) { alert("⚠️ 尚未發布報到時間！"); return; }
             
-            const aptDateStr = apt.replace(/\//g, '-');
-            const openTime = new Date(aptDateStr);
+            const aptDateStr = apt.replace(/-/g, '/');
+            const aptTime = new Date(aptDateStr);
             const now = new Date();
             
-            if (now < openTime) {
-                const timeParts = aptDateStr.split(' ');
-                const timeStr = timeParts[1] || '00:00';
-                alert(`⚠️ 營地大門深鎖\n請於 ${timeStr} 後再來！`);
-                return;
+            if (now > aptTime) {
+                alert(`🚨 警告：遲到報到！\n系統已自動扣除 2 分積極度積分！`);
+                fetch(`${this.config.apiUrl}?action=latePenalty&uid=${encodeURIComponent(this.config.uid)}`);
+                this.state.score -= 2; // 畫面先行扣分
+                this.state.scoreDetails.delayPenalty += 2;
             }
         }
         
@@ -484,9 +465,12 @@ const GameEngine = {
         
         this.updateButtonStyles();
 
-        // 🌟 嚴格控制：只有在提交任務按鈕按下時，才會飄出過關分數！
+        // 🌟 提交任務才會飄出底分！
         if (tData.scoreGain > 0 && event) {
             this.createFloatingText(event, `+${tData.scoreGain}`);
+            this.state.score += tData.scoreGain;
+            this.state.scoreDetails.base += tData.scoreGain;
+            setTimeout(() => { this.updateUI(true); }, 1000); // 確保閃爍
         }
 
         fetch(`${this.config.apiUrl}?action=completeTrial&uid=${encodeURIComponent(this.config.uid)}&trialNum=${trialNum}`)
@@ -500,24 +484,55 @@ const GameEngine = {
         }
     },
 
-    handleFileUpload(input, chkId) {
+    // 🌟 終極引擎：真實讀取檔案並轉為 Base64 傳送至 Google Drive
+    handleFileUpload(input, chkId, fileType) {
+        const file = input.files[0];
+        if (!file) return;
+
         const statusSpan = input.parentElement.querySelector('.upload-status');
         const chkBox = document.getElementById(chkId);
         
-        statusSpan.innerText = "⏳ 上傳中...";
+        statusSpan.innerText = "⏳ 魔法封裝上傳中...";
         statusSpan.classList.remove('success');
 
-        setTimeout(() => {
-            statusSpan.innerText = "已上傳"; 
-            statusSpan.classList.add('success');
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const base64Data = e.target.result.split(',')[1];
             
-            if (chkBox) {
-                chkBox.checked = true;
-                if (!this.state.checkboxes) this.state.checkboxes = {};
-                this.state.checkboxes[chkId] = true;
-                this.save();
-            }
-        }, 1500);
+            const payload = {
+                action: 'uploadFile',
+                uid: GameEngine.config.uid,
+                fileName: file.name,
+                mimeType: file.type,
+                fileType: fileType, // 告訴後台這是哪種檔案(bank, exam_normal...)
+                fileData: base64Data
+            };
+
+            fetch(GameEngine.config.apiUrl, {
+                method: 'POST', // 使用 POST 傳輸巨量檔案
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.status === 'success') {
+                    statusSpan.innerText = "✅ 歸檔完成";
+                    statusSpan.classList.add('success');
+                    if(chkBox) {
+                        chkBox.checked = true;
+                        if (!GameEngine.state.checkboxes) GameEngine.state.checkboxes = {};
+                        GameEngine.state.checkboxes[chkId] = true;
+                        GameEngine.save();
+                    }
+                } else {
+                    statusSpan.innerText = "❌ 傳輸失敗";
+                    alert("⚠️ 上傳失敗：" + res.message);
+                }
+            })
+            .catch(err => {
+                statusSpan.innerText = "❌ 網路中斷";
+            });
+        };
+        reader.readAsDataURL(file);
     },
 
     showFinalAchievement(withFirework = true) {
@@ -527,7 +542,6 @@ const GameEngine = {
             displayRankTitle = rankObj.title;
         }
         
-        const rankLetter = displayRankTitle.match(/[A-ZS]+/)?.[0] || 'D';
         const fullRankTitle = displayRankTitle.replace(/.*?([A-ZSS]+級.*)/, '$1');
         const currentProg = document.getElementById('prog-val').innerText;
 
@@ -599,7 +613,6 @@ const GameEngine = {
             const block = document.getElementById(`detail-trial-${n}`);
             if (!btn || !block) continue;
 
-            // 🌟 封印狀態：強力鎖定並自動打滿勾勾
             if (this.state.currentTrial >= n) {
                 btn.disabled = true;
                 btn.innerText = lockedTexts[n];
@@ -607,9 +620,7 @@ const GameEngine = {
                 btn.style.color = "";
                 
                 block.querySelectorAll('input').forEach(i => {
-                    if (i.type === 'checkbox') {
-                        i.checked = true; // 🌟 強制打滿勾勾
-                    }
+                    if (i.type === 'checkbox') i.checked = true; // 強制滿勾
                     i.disabled = true;
                     if (i.type === 'checkbox' || i.type === 'radio' || i.type === 'file') {
                         i.style.opacity = "1";
@@ -628,6 +639,7 @@ const GameEngine = {
                     btn.innerText = "🏆 成就回顧";
                     btn.style.backgroundColor = "#fbbf24";
                     btn.style.color = "#000";
+                    // 🌟 修正點擊沒反應：確保按鈕點擊彈出面板
                     btn.onclick = () => this.showFinalAchievement(false);
                 }
             }
