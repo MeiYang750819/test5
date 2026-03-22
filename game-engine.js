@@ -1,5 +1,5 @@
 /* ================================================================
-   【 ⚙️ GAME ENGINE - 真實雲端上傳與防失憶完美版 】
+   【 ⚙️ GAME ENGINE - 終極雙軌彩蛋與完美介面版 】
    ================================================================ */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -13,7 +13,7 @@ if (currentUser) {
 
 const GameEngine = {
     config: {
-        apiUrl: "https://script.google.com/macros/s/AKfycbz18MlQSnFETW9q80SWGixDg074px2_GxRbvS5RoFfrCiUsLO9T7j9aTEikeWV9z9Px7g/exec",
+        apiUrl: "https://script.google.com/macros/s/AKfycbwXUlq4i-jySuRy03pC6vpcVHZwjjwZ2AlZTl0CY0ojkU39uWCpXVOfb-cGKx-YEubi4w/exec",
         uid: currentUser
     },
 
@@ -255,32 +255,29 @@ const GameEngine = {
         return false;
     },
 
-    // 🌟 彩蛋解鎖邏輯 (雙軌智慧判別：打勾驗證勾選，摺疊標題直接給分)
+    // 🌟 超級翻譯大腦：精準解析舊版與新版的參數，彩蛋全面復活
     unlock(event, id, actionOrScore, title, scoreGain) {
         let actualScoreGain = 0;
         let actualTitle = "";
 
-        // 自動適應舊網頁 5 個參數 (event, id, 'click', '標題', 分數) 
-        // 與新網頁 3 個參數 (event, id, 分數) 的差異
         if (typeof actionOrScore === 'number') {
             actualScoreGain = actionOrScore;
+            actualTitle = title || "";
         } else {
             actualScoreGain = scoreGain || 0;
             actualTitle = title || "";
         }
 
-        // 雙軌防護：如果你點的是 checkbox，必須有打勾才算數
-        if (event && event.target && event.target.type === 'checkbox') {
+        // 雙軌防護：如果點的是 Checkbox，必須打勾才算
+        if (event && event.target && event.target.tagName === 'INPUT' && event.target.type === 'checkbox') {
             if (!event.target.checked) return; 
         }
 
-        // 如果已經拿過這個彩蛋，就不重複給
         if (this.state.achievements.includes(id)) return;
         
         this.state.achievements.push(id);
         this.save();
-
-        // 顯示彩蛋說明通知 (相容第一頁、第二頁的設定)
+        
         if (actualTitle) {
             this.showToast(`✨ 發現隱藏彩蛋：${actualTitle}`);
         }
@@ -500,6 +497,7 @@ const GameEngine = {
         
         this.updateButtonStyles();
 
+        // 🌟 提交任務飄出底分
         if (tData.scoreGain > 0 && event) {
             this.createFloatingText(event, `+${tData.scoreGain}`);
             this.state.score += tData.scoreGain;
@@ -569,13 +567,18 @@ const GameEngine = {
     },
 
     showFinalAchievement(withFirework = true) {
-        let displayRankTitle = this.state.backendRank;
+        let displayRankTitle = this.state.backendRank || "";
         if (!displayRankTitle) {
             const rankObj = this.ranks.find(r => this.state.score >= r.min) || this.ranks[7];
             displayRankTitle = rankObj.title;
         }
         
-        const fullRankTitle = displayRankTitle.replace(/.*?([A-ZSS]+級.*)/, '$1');
+        // 🌟 絕對防當機處理
+        let fullRankTitle = "尚未評級";
+        try {
+            fullRankTitle = String(displayRankTitle).replace(/.*?([A-ZSS]+級.*)/, '$1');
+        } catch(e) {}
+        
         const currentProg = document.getElementById('prog-val').innerText;
 
         const weaponItem = this.state.items.find(i => Object.keys(this.weaponPaths).includes(i) || Object.values(this.weaponPaths).includes(i) || ['👑 王者之聖劍', '☄️ 破曉流星弓', '🐉 滅世龍吟槍'].includes(i)) || "";
