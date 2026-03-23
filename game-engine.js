@@ -13,7 +13,7 @@ if (currentUser) {
 
 const GameEngine = {
     config: {
-        apiUrl: "https://script.google.com/macros/s/AKfycbwXUlq4i-jySuRy03pC6vpcVHZwjjwZ2AlZTl0CY0ojkU39uWCpXVOfb-cGKx-YEubi4w/exec",
+        apiUrl: "https://script.google.com/macros/s/AKfycbzeRcm0HPrmkfPWhQ6whjDp11bMmYNcGTW5TJ3owRAoMad-9qCnClKsdcOIIt9iO4yy5Q/exec",
         uid: currentUser
     },
 
