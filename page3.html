@@ -116,7 +116,8 @@ margin: 20px 0;
 
 <nav class="nav-tabs" style="top: 180px;">
 <a href="index.html" class="tab-btn">📜 冒險指南</a>
-<a href="page2.html" class="tab-btn">🏹 鍛造秘笈</a> <a href="javascript:void(0)" onclick="location.reload();" class="tab-btn active">⚔️ 勇者試煉</a>
+<a href="page2.html" class="tab-btn">🏹 鍛造秘笈</a>
+<a href="javascript:void(0)" onclick="location.reload();" class="tab-btn active">⚔️ 勇者試煉</a>
 </nav>
 
 <main class="tab-content active">
@@ -130,8 +131,8 @@ margin: 20px 0;
 　　- 確保完全理解冒險指南內容
 </span>
 
-<label class="check-item"><input type="checkbox" id="chk-guide" onchange="GameEngine.unlock(event, 'faq_main', 6)"> 我已閱讀「📜 冒險指南」</label>
-<label class="check-item"><input type="checkbox" id="chk-forge" onchange="GameEngine.unlock(event, 'onboard_main', 6)"> 我已閱讀「🏹 鍛造秘笈」</label>
+<label class="check-item"><input type="checkbox" id="chk-guide" onchange="GameEngine.unlock(event, 'faq_main', 6, '冒險指南')"> 我已閱讀「📜 冒險指南」</label>
+<label class="check-item"><input type="checkbox" id="chk-forge" onchange="GameEngine.unlock(event, 'onboard_main', 6, '鍛造秘笈')"> 我已閱讀「🏹 鍛造秘笈」</label>
 <label class="check-item"><input type="checkbox" id="chk-risk"> 若被退件「👤 本人承擔」</label>
 
 <div class="action-center">
@@ -178,10 +179,10 @@ margin: 20px 0;
         </div>
     </div>
 
-    <div class="upload-group">
+    <div class="upload-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
         <label class="check-item" style="margin:0;"><input type="checkbox" id="chk-t2-4" onclick="return false;"> 其他證照</label>
-        <div style="display:flex; align-items:center; gap:5px;">
-            <input type="text" id="input-equip-other" class="text-input-field" placeholder="證照名稱" style="width: 80px;">
+        <div style="display:flex; align-items:center; gap:5px; width: 100%;">
+            <input type="text" id="input-equip-other" class="text-input-field" placeholder="請輸入證照名稱" style="flex:1;">
             <input type="file" id="f-t2-4" style="display:none;" onchange="GameEngine.handleFileUpload(this, 'chk-t2-4', 'license_other')">
             <button class="file-upload-btn" onclick="document.getElementById('f-t2-4').click()">上傳</button>
             <span class="upload-status"></span>
@@ -224,7 +225,7 @@ margin: 20px 0;
         </div>
     </div>
 
-    <label class="check-item" style="margin-left: 10px; margin-bottom: 12px;"><input type="checkbox" class="chk-trial3" id="chk-photo"> 兩吋照片一張</label>
+    <label class="check-item"><input type="checkbox" class="chk-trial3" id="chk-photo"> 確認兩吋照片一張已備妥</label>
 
     <div class="upload-group">
         <label class="check-item" style="margin:0;"><input type="checkbox" id="chk-nh" onclick="return false;"> 前份工作健保轉出證明 -新鮮人免附</label>
@@ -358,9 +359,13 @@ function checkTrial1(e) {
 function checkTrial3(e) { 
     const examNormal = document.getElementById('chk-exam-normal');
     const examFood = document.getElementById('chk-exam-food');
+    const photo = document.getElementById('chk-photo');
     if (!examNormal.checked || !examFood.checked) { 
         alert("⚠️ 勇者請注意：\n必須上傳體檢報告才能推進關卡！"); return; 
-    } 
+    }
+    if (!photo.checked) {
+        alert("⚠️ 勇者請注意：\n必須確認照片已備妥才能推進關卡！"); return; 
+    }
     const chks = document.querySelectorAll('.chk-trial3'); 
     let all = true; 
     chks.forEach(c => { if(!c.checked) all = false; }); 
