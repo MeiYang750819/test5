@@ -1,7 +1,8 @@
 /* ================================================================
-   【 ⚙️ GAME ENGINE - 終極雙軌彩蛋與完美介面版 】
+   【 ⚙️ GAME ENGINE - 終極排版清晰完整版 】
    ================================================================ */
 
+// 1. 抓取網址參數 (uid 或 id) 與防失憶機制
 const urlParams = new URLSearchParams(window.location.search);
 let currentUser = urlParams.get('uid') || urlParams.get('id');
 
@@ -12,11 +13,13 @@ if (currentUser) {
 }
 
 const GameEngine = {
+    // API 連線設定
     config: {
         apiUrl: "https://script.google.com/macros/s/AKfycbzeRcm0HPrmkfPWhQ6whjDp11bMmYNcGTW5TJ3owRAoMad-9qCnClKsdcOIIt9iO4yy5Q/exec",
         uid: currentUser
     },
 
+    // 系統狀態
     state: {
         score: 0,
         backendRank: "",
@@ -44,6 +47,7 @@ const GameEngine = {
         hasSeenDoomFlash: false
     },
 
+    // 戰力稱號
     ranks: [
         { min: 101, title: "💎 SS級 神話級玩家" },
         { min: 96,  title: "🌟 S級 傳說級玩家" },
@@ -55,17 +59,18 @@ const GameEngine = {
         { min: 0,   title: "🥚 報到新手村" }
     ],
 
+    // 裝備路徑
     armorPath: [
         '👕 粗製布衣', '🧥 強化布衫', '🥋 實習皮甲', '🦺 輕型鎖甲',
         '🛡️ 鋼鐵重甲', '💠 秘銀胸甲', '🛡️ 聖光戰鎧', '🌟 永恆守護鎧'
     ],
-
     weaponPaths: {
         '🗡️ 精鋼短劍': '⚔️ 騎士長劍', '⚔️ 騎士長劍': '⚔️ 破甲重劍', '⚔️ 破甲重劍': '⚔️ 斬星巨劍', '⚔️ 斬星巨劍': '🗡️ 聖光戰劍', '🗡️ 聖光戰劍': '👑 王者之聖劍',
         '🏹 獵人短弓': '🏹 精靈長弓', '🏹 精靈長弓': '🏹 迅雷連弓', '🏹 迅雷連弓': '🏹 穿雲幻弓', '🏹 穿雲幻弓': '🏹 追風神弓', '🏹 追風神弓': '☄️ 破曉流星弓',
         '🔱 鐵尖長槍': '🔱 鋼鐵戰矛', '🔱 鋼鐵戰矛': '🔱 破陣重矛', '🔱 破陣重矛': '🔱 雷霆戰戟', '🔱 雷霆戰戟': '🔱 龍膽銀槍', '🔱 龍膽銀槍': '🐉 滅世龍吟槍'
     },
 
+    // 各關卡底分資料
     trialsData: {
         1: { progGain: 14, loc: '🏰 登錄公會', scoreGain: 16 },
         2: { progGain: 14, loc: '📁 裝備盤點', scoreGain: 16 },
@@ -75,12 +80,15 @@ const GameEngine = {
         6: { progGain: 12, loc: '👑 榮耀殿堂', scoreGain: 0 }
     },
 
-    getStorageKey() { return 'hero_progress_' + this.config.uid; },
+    getStorageKey() { 
+        return 'hero_progress_' + this.config.uid; 
+    },
 
+    // 系統啟動
     init() {
         document.querySelectorAll('details').forEach(el => el.removeAttribute('open'));
 
-        // 防止跳頁失憶
+        // 為所有導覽按鈕加上 ID，防止跳頁失憶
         document.querySelectorAll('.tab-btn').forEach(btn => {
             if (btn.href && !btn.href.includes('javascript')) {
                 const url = new URL(btn.href, window.location.href);
@@ -89,16 +97,22 @@ const GameEngine = {
             }
         });
 
+        // 讀取個人進度
         try {
             const saved = localStorage.getItem(this.getStorageKey());
-            if (saved) this.state = Object.assign({}, this.state, JSON.parse(saved));
+            if (saved) {
+                this.state = Object.assign({}, this.state, JSON.parse(saved));
+            }
         } catch (e) {}
 
         this.injectGlobalCSS();
 
+        // 綁定 Checkbox 記憶
         setTimeout(() => {
             document.querySelectorAll('input[type="checkbox"]').forEach(chk => {
-                if (this.state.checkboxes && this.state.checkboxes[chk.id]) chk.checked = true;
+                if (this.state.checkboxes && this.state.checkboxes[chk.id]) {
+                    chk.checked = true;
+                }
                 chk.addEventListener('change', (e) => {
                     if (!this.state.checkboxes) this.state.checkboxes = {};
                     this.state.checkboxes[e.target.id] = e.target.checked;
@@ -109,41 +123,45 @@ const GameEngine = {
 
         this.syncWithBackend();
 
-        setTimeout(() => { this.updateUI(false); }, 50);
+        setTimeout(() => { 
+            this.updateUI(false); 
+        }, 50);
 
         if (this.state.currentTrial >= 6) {
-            setTimeout(() => { this.showFinalAchievement(false); }, 800);
+            setTimeout(() => { 
+                this.showFinalAchievement(false); 
+            }, 800);
         }
     },
 
+    // 注入全域特效與樣式 (維持 1.2 倍閃亮)
     injectGlobalCSS() {
         if (document.getElementById('game-fx-style')) return;
         const style = document.createElement('style');
         style.id = 'game-fx-style';
         style.innerHTML = `
-            @keyframes shinyUpdate {
-                0%, 100% { filter: brightness(1); transform: scale(1); }
-                50% { filter: brightness(1.5); transform: scale(1.2); color: #ffffff; text-shadow: 0 0 15px #fbbf24; }
+            @keyframes shinyUpdate { 
+                0%, 100% { transform: scale(1); filter: brightness(1); } 
+                50% { transform: scale(1.2); filter: brightness(1.5); color: #ffffff; text-shadow: 0 0 15px #fbbf24; } 
             }
             .shiny-effect { animation: shinyUpdate 1s ease-in-out; display: inline-block; }
             .game-toast {
                 position: fixed; bottom: 20px; right: -300px;
                 background: #1a1a1a; color: #efefef; border: 1px solid #fbbf24;
                 padding: 12px 20px; border-radius: 8px; z-index: 9999;
-                transition: 0.5s; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: bold;
+                transition: 0.5s; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             }
             .game-toast.show { right: 20px; }
-            
             .floating-score {
                 position: fixed; color: #4ade80; font-size: 24px; font-weight: bold;
-                text-shadow: 0 0 8px rgba(0,0,0,0.8); pointer-events: none; z-index: 10000;
+                pointer-events: none; z-index: 10000;
                 animation: floatUp 1.5s ease-out forwards;
+                text-shadow: 0 0 8px rgba(0,0,0,0.8);
             }
             @keyframes floatUp {
-                0% { opacity: 1; transform: translateY(0) scale(1); }
-                100% { opacity: 0; transform: translateY(-50px) scale(1.5); }
+                0% { opacity: 1; transform: translateY(0); }
+                100% { opacity: 0; transform: translateY(-50px); }
             }
-
             input[type="date"] { color-scheme: dark; color: white; }
             input.locked-input {
                 -webkit-appearance: none !important;
@@ -159,6 +177,7 @@ const GameEngine = {
         document.head.appendChild(style);
     },
 
+    // 與後台資料庫同步
     async syncWithBackend() {
         if (!this.config.apiUrl || this.config.apiUrl.includes("請把_WEB_APP")) return;
 
@@ -196,6 +215,7 @@ const GameEngine = {
                     }
                 }
 
+                // 填入公司與姓名資料
                 document.querySelectorAll('.dyn-company').forEach(el => el.innerText = d.companyName || "MYs studio");
                 document.querySelectorAll('.dyn-team').forEach(el => el.innerText = d.team || "外場團隊");
                 document.querySelectorAll('.dyn-type').forEach(el => el.innerText = d.type || "兼職");
@@ -218,16 +238,20 @@ const GameEngine = {
                 }
 
                 this.save();
+                
+                // 只有新分數比較高時才觸發閃光
                 this.updateUI(this.state.score > oldScore);
             }
-        } catch (err) { console.error("同步失敗:", err); }
+        } catch (err) { 
+            console.error("同步失敗:", err); 
+        }
     },
 
     flashElement(id) {
         const el = document.getElementById(id);
         if (el) {
             el.classList.remove('shiny-effect');
-            void el.offsetWidth;
+            void el.offsetWidth; // 觸發重繪
             el.classList.add('shiny-effect');
         }
     },
@@ -255,11 +279,12 @@ const GameEngine = {
         return false;
     },
 
-    // 🌟 超級翻譯大腦：精準解析舊版與新版的參數，彩蛋全面復活
+    // 🌟 超級翻譯大腦：雙軌解析彩蛋 (相容新舊格式)
     unlock(event, id, actionOrScore, title, scoreGain) {
         let actualScoreGain = 0;
         let actualTitle = "";
 
+        // 解析傳入的參數，判斷是舊版網頁還是新版網頁
         if (typeof actionOrScore === 'number') {
             actualScoreGain = actionOrScore;
             actualTitle = title || "";
@@ -268,20 +293,23 @@ const GameEngine = {
             actualTitle = title || "";
         }
 
-        // 雙軌防護：如果點的是 Checkbox，必須打勾才算
+        // 防護機制：如果是核取方塊，沒打勾就不算
         if (event && event.target && event.target.tagName === 'INPUT' && event.target.type === 'checkbox') {
             if (!event.target.checked) return; 
         }
 
+        // 防重複領取
         if (this.state.achievements.includes(id)) return;
         
         this.state.achievements.push(id);
         this.save();
         
+        // 彈出右下角提示
         if (actualTitle) {
             this.showToast(`✨ 發現隱藏彩蛋：${actualTitle}`);
         }
         
+        // 分數飄浮與寫入
         if (actualScoreGain > 0) {
             this.state.score += actualScoreGain;
             this.state.scoreDetails.base += actualScoreGain;
@@ -291,7 +319,10 @@ const GameEngine = {
             }
             
             fetch(`${this.config.apiUrl}?action=updateScore&uid=${encodeURIComponent(this.config.uid)}&field=${encodeURIComponent(id)}&score=${encodeURIComponent(actualScoreGain)}`);
-            setTimeout(() => { this.updateUI(true); }, 1000);
+            
+            setTimeout(() => { 
+                this.updateUI(true); 
+            }, 1000);
         }
     },
 
@@ -308,26 +339,36 @@ const GameEngine = {
             this.state.score -= gain;
             this.state.scoreDetails.base -= gain;
         }
-        this.save(); this.updateUI(true);
+        this.save(); 
+        this.updateUI(true);
     },
 
     createFloatingText(e, text) {
-        if (text === '+0' || !text) return; 
-        const x = e.clientX || (e.touches && e.touches[0].clientX);
-        const y = e.clientY || (e.touches && e.touches[0].clientY);
+        if (text === '+0' || !text || !e) return; 
+        const x = e.clientX || (e.touches && e.touches[0].clientX) || e.pageX;
+        const y = e.clientY || (e.touches && e.touches[0].clientY) || e.pageY;
+        
         const el = document.createElement('div');
-        el.className = 'floating-score'; el.innerText = text;
-        el.style.left = `${x}px`; el.style.top = `${y}px`;
+        el.className = 'floating-score'; 
+        el.innerText = text;
+        el.style.left = `${x}px`; 
+        el.style.top = `${y}px`;
+        
         document.body.appendChild(el);
         setTimeout(() => el.remove(), 1500);
     },
 
     showToast(msg) {
         const toast = document.createElement('div');
-        toast.className = 'game-toast'; toast.innerText = msg;
+        toast.className = 'game-toast'; 
+        toast.innerText = msg;
+        
         document.body.appendChild(toast);
         setTimeout(() => toast.classList.add('show'), 100);
-        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 500); }, 3000);
+        setTimeout(() => { 
+            toast.classList.remove('show'); 
+            setTimeout(() => toast.remove(), 500); 
+        }, 3000);
     },
 
     save() {
@@ -343,8 +384,13 @@ const GameEngine = {
 
         const rEl = document.getElementById('rank-text');
         const sEl = document.getElementById('status-tag');
-        if (rEl) rEl.innerHTML = `<span style="color:#fbbf24;">戰力：</span><span id="rank-name">${displayRankTitle}</span>　｜　<span style="color:#fbbf24;">關卡：</span><span id="loc-text">${this.state.location}</span>`;
-        if (sEl) sEl.innerHTML = `<span style="color:#8ab4f8;">道具：</span><span id="item-text">${this.state.items.join(' ')}</span>　｜　<span style="color:#8ab4f8;">狀態：</span><span id="dyn-status">${this.state.status}</span>`;
+        
+        if (rEl) {
+            rEl.innerHTML = `<span style="color:#fbbf24;">戰力：</span><span id="rank-name">${displayRankTitle}</span>　｜　<span style="color:#fbbf24;">關卡：</span><span id="loc-text">${this.state.location}</span>`;
+        }
+        if (sEl) {
+            sEl.innerHTML = `<span style="color:#8ab4f8;">道具：</span><span id="item-text">${this.state.items.join(' ')}</span>　｜　<span style="color:#8ab4f8;">狀態：</span><span id="dyn-status">${this.state.status}</span>`;
+        }
         
         const scoreEl = document.getElementById('score-text');
         const scoreFill = document.getElementById('score-fill');
@@ -352,7 +398,10 @@ const GameEngine = {
         if (scoreFill) scoreFill.style.width = Math.min(this.state.score, 100) + "%";
 
         let currentProg = 0;
-        for(let i=1; i<=this.state.currentTrial; i++) { currentProg += this.trialsData[i].progGain; }
+        for(let i=1; i<=this.state.currentTrial; i++) { 
+            currentProg += this.trialsData[i].progGain; 
+        }
+        
         const progVal = document.getElementById('prog-val');
         const progFill = document.getElementById('prog-fill');
         if (progVal) progVal.innerText = currentProg + "%";
@@ -367,6 +416,7 @@ const GameEngine = {
         this.updateDateControls();
         this.updateButtonStyles();
         
+        // 更新前線營時間
         const timeEl = document.getElementById('dyn-apt-time');
         const locEl = document.getElementById('dyn-apt-loc');
         const openEl = document.getElementById('dyn-open-time');
@@ -395,10 +445,16 @@ const GameEngine = {
             const btn = document.getElementById(field.btn);
             if (input && btn) {
                 if (field.locked) {
-                    input.type = 'text'; input.value = field.val || ""; input.disabled = true;
-                    input.classList.add('locked-input'); btn.innerText = "已鎖定"; btn.disabled = true; btn.style.opacity = "0.5";
+                    input.type = 'text'; 
+                    input.value = field.val || ""; 
+                    input.disabled = true;
+                    input.classList.add('locked-input'); 
+                    btn.innerText = "已鎖定"; 
+                    btn.disabled = true; 
+                    btn.style.opacity = "0.5";
                 } else {
-                    input.type = 'date'; input.classList.remove('locked-input');
+                    input.type = 'date'; 
+                    input.classList.remove('locked-input');
                 }
             }
         });
@@ -408,22 +464,30 @@ const GameEngine = {
         const changeBtn = document.getElementById('btn-lock-change');
         
         if (changeInput && changeBtn && this.state.changeDateLocked) {
-            changeInput.type = 'text'; changeInput.value = this.state.changeDate || "";
-            changeInput.disabled = true; changeInput.classList.add('locked-input');
+            changeInput.type = 'text'; 
+            changeInput.value = this.state.changeDate || "";
+            changeInput.disabled = true; 
+            changeInput.classList.add('locked-input');
 
             if (changeReason) {
                 changeReason.value = this.state.changeReason || "";
-                changeReason.disabled = true; changeReason.classList.add('locked-input');
+                changeReason.disabled = true; 
+                changeReason.classList.add('locked-input');
             }
 
-            changeBtn.innerText = "已送出"; changeBtn.disabled = true; changeBtn.style.opacity = "0.5";
+            changeBtn.innerText = "已送出"; 
+            changeBtn.disabled = true; 
+            changeBtn.style.opacity = "0.5";
         }
     },
 
     lockDate(type) {
         const id = type === 'exam' ? 'input-exam-date' : type === 'result' ? 'input-result-date' : 'input-bank-date';
         const val = document.getElementById(id).value;
-        if (!val) { alert("請先選擇日期！"); return; }
+        if (!val) { 
+            alert("請先選擇日期！"); 
+            return; 
+        }
         
         const confirmLock = confirm("鎖定後不可修改，確定要鎖定嗎？");
         if (!confirmLock) return;
@@ -432,7 +496,8 @@ const GameEngine = {
         else if (type === 'result') { this.state.resultDate = val; this.state.resultDateLocked = true; }
         else if (type === 'bank') { this.state.bankDate = val; this.state.bankDateLocked = true; }
         
-        this.save(); this.updateUI(false);
+        this.save(); 
+        this.updateUI(false);
         fetch(`${this.config.apiUrl}?action=lockDate&uid=${encodeURIComponent(this.config.uid)}&dateType=${type}&dateValue=${encodeURIComponent(val)}`);
     },
 
@@ -454,19 +519,82 @@ const GameEngine = {
         const reasonInput = document.getElementById('input-change-reason');
         const changeBtn = document.getElementById('btn-lock-change');
         
-        changeInput.type = 'text'; changeInput.disabled = true; changeInput.classList.add('locked-input');
-        reasonInput.disabled = true; reasonInput.classList.add('locked-input');
-        changeBtn.innerText = "已送出"; changeBtn.disabled = true; changeBtn.style.opacity = "0.5";
+        changeInput.type = 'text'; 
+        changeInput.disabled = true; 
+        changeInput.classList.add('locked-input');
+        reasonInput.disabled = true; 
+        reasonInput.classList.add('locked-input');
+        changeBtn.innerText = "已送出"; 
+        changeBtn.disabled = true; 
+        changeBtn.style.opacity = "0.5";
+        
+        this.state.changeDateLocked = true;
+        this.save();
         
         fetch(`${this.config.apiUrl}?action=lockDate&uid=${encodeURIComponent(this.config.uid)}&dateType=change&dateValue=${encodeURIComponent(dateVal)}&reason=${encodeURIComponent(reasonVal)}`);
+    },
+
+    // 🌟 真實檔案直傳雲端處理
+    handleFileUpload(input, chkId, fileType) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const statusSpan = input.parentElement.querySelector('.upload-status');
+        const chkBox = document.getElementById(chkId);
+        
+        statusSpan.innerText = "⏳ 魔法封裝上傳中...";
+        statusSpan.classList.remove('success');
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const base64Data = e.target.result.split(',')[1];
+            
+            const payload = {
+                action: 'uploadFile',
+                uid: GameEngine.config.uid,
+                fileName: file.name,
+                mimeType: file.type,
+                fileType: fileType, 
+                fileData: base64Data
+            };
+
+            fetch(GameEngine.config.apiUrl, {
+                method: 'POST', 
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.status === 'success') {
+                    statusSpan.innerText = "✅ 歸檔完成";
+                    statusSpan.classList.add('success');
+                    if(chkBox) {
+                        chkBox.checked = true;
+                        if (!this.state.checkboxes) this.state.checkboxes = {};
+                        this.state.checkboxes[chkId] = true;
+                        this.save();
+                    }
+                } else {
+                    statusSpan.innerText = "❌ 傳輸失敗";
+                    alert("⚠️ 上傳失敗：" + res.message);
+                }
+            })
+            .catch(err => {
+                statusSpan.innerText = "❌ 網路中斷";
+            });
+        };
+        reader.readAsDataURL(file);
     },
 
     completeTrial(event, trialNum) {
         if (this.state.currentTrial >= trialNum) return;
         
+        // 第四關遲到扣分機制
         if (trialNum === 4) {
             const apt = this.state.appointmentTime;
-            if (!apt || apt.includes("等待")) { alert("⚠️ 尚未發布報到時間！"); return; }
+            if (!apt || apt.includes("等待")) { 
+                alert("⚠️ 尚未發布報到時間！"); 
+                return; 
+            }
             
             const aptDateStr = apt.replace(/-/g, '/');
             const aptTime = new Date(aptDateStr);
@@ -493,11 +621,13 @@ const GameEngine = {
         this.save();
         
         const detailsBlock = document.getElementById(`detail-trial-${trialNum}`);
-        if (detailsBlock) { detailsBlock.removeAttribute('open'); }
+        if (detailsBlock) { 
+            detailsBlock.removeAttribute('open'); 
+        }
         
         this.updateButtonStyles();
 
-        // 🌟 提交任務飄出底分
+        // 提交任務飄出底分
         if (tData.scoreGain > 0 && event) {
             this.createFloatingText(event, `+${tData.scoreGain}`);
             this.state.score += tData.scoreGain;
@@ -516,56 +646,6 @@ const GameEngine = {
         }
     },
 
-    handleFileUpload(input, chkId, fileType) {
-        const file = input.files[0];
-        if (!file) return;
-
-        const statusSpan = input.parentElement.querySelector('.upload-status');
-        const chkBox = document.getElementById(chkId);
-        
-        statusSpan.innerText = "⏳ 魔法封裝上傳中...";
-        statusSpan.classList.remove('success');
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const base64Data = e.target.result.split(',')[1];
-            
-            const payload = {
-                action: 'uploadFile',
-                uid: GameEngine.config.uid,
-                fileName: file.name,
-                mimeType: file.type,
-                fileType: fileType, 
-                fileData: base64Data
-            };
-
-            fetch(GameEngine.config.apiUrl, {
-                method: 'POST', 
-                body: JSON.stringify(payload)
-            })
-            .then(res => res.json())
-            .then(res => {
-                if(res.status === 'success') {
-                    statusSpan.innerText = "✅ 歸檔完成";
-                    statusSpan.classList.add('success');
-                    if(chkBox) {
-                        chkBox.checked = true;
-                        if (!GameEngine.state.checkboxes) GameEngine.state.checkboxes = {};
-                        GameEngine.state.checkboxes[chkId] = true;
-                        GameEngine.save();
-                    }
-                } else {
-                    statusSpan.innerText = "❌ 傳輸失敗";
-                    alert("⚠️ 上傳失敗：" + res.message);
-                }
-            })
-            .catch(err => {
-                statusSpan.innerText = "❌ 網路中斷";
-            });
-        };
-        reader.readAsDataURL(file);
-    },
-
     showFinalAchievement(withFirework = true) {
         let displayRankTitle = this.state.backendRank || "";
         if (!displayRankTitle) {
@@ -573,7 +653,7 @@ const GameEngine = {
             displayRankTitle = rankObj.title;
         }
         
-        // 🌟 絕對防當機處理
+        // 絕對防當機抓取評級
         let fullRankTitle = "尚未評級";
         try {
             fullRankTitle = String(displayRankTitle).replace(/.*?([A-ZSS]+級.*)/, '$1');
