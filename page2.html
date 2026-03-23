@@ -14,6 +14,9 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="nav.css">
     <script src="game-engine.js"></script>
+    <style>
+        .nav-tabs .tab-btn { white-space: nowrap !important; min-width: max-content !important; }
+    </style>
 </head>
 <body class="page-2">
 
@@ -35,17 +38,14 @@
 
     <div class="sticky-bar" id="block-status-3" style="top: 135px;">
         <span id="score-label" style="color:#ff8a8a;">🏆 冒險積分：</span><span id="score-text">0分</span>
-        <div class="progress-track">
-            <div class="progress-fill" id="score-fill" style="width: 0%;"></div>
-        </div>　｜　<span id="prog-label" style="color:#ff8a8a;">⚔️ 攻略進度：</span><span id="prog-val">0%</span>
-        <div class="progress-track">
-            <div class="progress-fill" id="prog-fill" style="width: 0%;"></div>
-        </div>
+        <div class="progress-track"><div class="progress-fill" id="score-fill" style="width: 0%;"></div></div>
+        　｜　<span id="prog-label" style="color:#ff8a8a;">⚔️ 攻略進度：</span><span id="prog-val">0%</span>
+        <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width: 0%;"></div></div>
     </div>
 
     <nav class="nav-tabs" style="top: 180px;">
         <a href="index.html" class="tab-btn">📜 冒險指南</a>
-        <a href="page2.html" class="tab-btn active">🏹 鍛造秘笈</a>
+        <a href="javascript:void(0)" onclick="location.reload();" class="tab-btn active">🏹 鍛造秘笈</a>
         <a href="page3.html" class="tab-btn">⚔️ 勇者試煉</a>
     </nav>
 
@@ -54,40 +54,18 @@
         <details>
             <summary class="main-summary">⏫ 上傳檔案教學</summary>
             <div class="details-body" style="white-space: normal;">
-                
-                <div style="white-space: pre-wrap; margin-bottom: 15px; color: var(--details-textColor);">■ 上傳個人準備文件,請務必參考正確及錯誤範例.
-■ 檔案須符合本公司限定規格.
-■ 若規格錯誤則退件再重新上傳.</div>
+                <div style="white-space: pre-wrap; margin-bottom: 15px; color: var(--details-textColor);">■ 上傳個人準備文件,請務必參考正確及錯誤範例.<br>■ 檔案須符合本公司限定規格.<br>■ 若規格錯誤則退件再重新上傳.</div>
 
                 <strong style="display: block; font-size: 14px; color: var(--details-textColor); margin-bottom: 5px;">🍎 手機系統-IOS</strong>
-                <div style="white-space: pre-wrap; line-height: 1.8; font-weight: bold; color: var(--details-textColor); background: var(--sample-boxBgColor); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 1px 3px rgba(0,0,0,0.3);">點擊備忘錄
-↓
-點擊右下角
-↓
-點擊相機圖示
-↓
-點擊掃描文件  
-↓
-開始掃描
-↓
-存檔雲端上傳</div>
+                <div style="white-space: pre-wrap; line-height: 1.8; font-weight: bold; color: var(--details-textColor); background: var(--sample-boxBgColor); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 1px 3px rgba(0,0,0,0.3);">點擊備忘錄<br>↓<br>點擊右下角<br>↓<br>點擊相機圖示<br>↓<br>點擊掃描文件  <br>↓<br>開始掃描<br>↓<br>存檔雲端上傳</div>
 
                 <strong style="display: block; font-size: 14px; color: var(--details-textColor); margin-bottom: 5px;">🤖 手機系統-Android</strong>
-                <div style="white-space: pre-wrap; line-height: 1.8; font-weight: bold; color: var(--details-textColor); background: var(--sample-boxBgColor); padding: 15px; border-radius: 8px; margin-bottom: 5px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 1px 3px rgba(0,0,0,0.3);">點擊雲端硬碟
-↓
-點擊＋
-↓
-點擊掃描文件
-↓
-開始掃描
-↓
-存檔雲端上傳</div>
-
+                <div style="white-space: pre-wrap; line-height: 1.8; font-weight: bold; color: var(--details-textColor); background: var(--sample-boxBgColor); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 1px 3px rgba(0,0,0,0.3);">點擊雲端硬碟<br>↓<br>點擊＋<br>↓<br>點擊掃描文件<br>↓<br>開始掃描<br>↓<br>存檔雲端上傳</div>
             </div>
         </details>
 
         <details>
-            <summary class="main-summary" onclick="GameEngine.unlock(event, 'pg2-m-1', 'large_fold')">👀 範例對照區域</summary>
+            <summary class="main-summary" onclick="GameEngine.unlock(event, 'pg2-m-1', 2, '範例對照區域')">👀 範例對照區域</summary>
             <div class="details-body" style="white-space: normal;">
                 <strong style="display: block; font-size: 14px; color: var(--details-textColor); margin-bottom: 8px;">📹 iPhone備忘錄掃描文件操作示範</strong>
                 <figure class="sample-box" style="margin-top: 0; margin-bottom: 15px; padding: 5px;">
@@ -100,15 +78,15 @@
                 <div class="horizontal-scroll">
                     <figure class="sample-box" onclick="zoomImg(this)">
                         <img class="sample-img" src="assets/體檢報告範本.jpg" alt="❗️體檢報告範本.jpg">
-                        <figcaption class="sample-cap">✅ 正確範例-體檢報告上傳規格</figcaption>
+                        <figcaption class="sample-cap">✅ 正確範例-體檢報告規格</figcaption>
                     </figure>
                     <figure class="sample-box" onclick="zoomImg(this)">
                         <img class="sample-img" src="assets/身分證範本-正面.jpg" alt="❗️身分證範本-正面.jpg">
-                        <figcaption class="sample-cap">✅ 正確範例-身分證正面範本</figcaption>
+                        <figcaption class="sample-cap">✅ 正確範例-身分證正面</figcaption>
                     </figure>
                     <figure class="sample-box" onclick="zoomImg(this)">
                         <img class="sample-img" src="assets/身分證範本-背面.png" alt="❗️身分證範本-背面.png">
-                        <figcaption class="sample-cap">✅ 正確範例-身分證背面範本</figcaption>
+                        <figcaption class="sample-cap">✅ 正確範例-身分證背面</figcaption>
                     </figure>
                     <figure class="sample-box" onclick="zoomImg(this)">
                         <img class="sample-img" src="assets/薪酬銀行範本.jpg" alt="❗️薪酬銀行範本.jpg">
@@ -120,19 +98,15 @@
                 <div class="horizontal-scroll">
                     <figure class="sample-box" onclick="zoomImg(this)">
                         <img class="sample-img" src="assets/錯誤範例-1.jpg" alt="❗️錯誤範例-1.jpg">
-                        <figcaption class="sample-cap">❌ 錯誤範例-需要好閱讀</figcaption>
+                        <figcaption class="sample-cap">❌ 錯誤範例-模糊不清</figcaption>
                     </figure>
                     <figure class="sample-box" onclick="zoomImg(this)">
                         <img class="sample-img" src="assets/錯誤範例-2.jpg" alt="❗️錯誤範例-2.jpg">
-                        <figcaption class="sample-cap">❌ 錯誤範例-四角未對四個角</figcaption>
+                        <figcaption class="sample-cap">❌ 錯誤範例-四角未對齊</figcaption>
                     </figure>
                     <figure class="sample-box" onclick="zoomImg(this)">
                         <img class="sample-img" src="assets/錯誤範例-3.jpg" alt="❗️錯誤範例-3.jpg">
-                        <figcaption class="sample-cap">❌ 錯誤範例-有小手手入鏡</figcaption>
-                    </figure>
-                    <figure class="sample-box" onclick="zoomImg(this)">
-                        <img class="sample-img" src="assets/戶頭錯誤範例.jpg" alt="❗️戶頭錯誤範例.jpg">
-                        <figcaption class="sample-cap">❌ 錯誤範例-需要好閱讀</figcaption>
+                        <figcaption class="sample-cap">❌ 錯誤範例-手入鏡</figcaption>
                     </figure>
                 </div>
             </div>
@@ -145,20 +119,13 @@
     </footer>
 
     <script>
-        const fetchedData = {
-            companyName: "MYs studio", 
-            team: "外場團隊",
-            type: "兼職",
-            userName: "測試員"
-        };
-
+        const fetchedData = { companyName: "MYs studio", team: "外場團隊", type: "兼職", userName: "測試員" };
         function applyData(data) {
             document.querySelectorAll('.dyn-company').forEach(el => el.innerText = data.companyName);
             document.querySelectorAll('.dyn-team').forEach(el => el.innerText = data.team);
             document.querySelectorAll('.dyn-type').forEach(el => el.innerText = data.type);
             document.querySelectorAll('.dyn-name').forEach(el => el.innerText = data.userName);
         }
-
         function zoomImg(el) {
             const img = el.querySelector('img');
             if(img) {
@@ -166,12 +133,9 @@
                 document.getElementById('lightbox').style.display = 'flex';
             }
         }
-
         window.addEventListener('load', () => { 
             applyData(fetchedData); 
-            if (typeof GameEngine !== 'undefined') {
-                GameEngine.init(); 
-            }
+            if (typeof GameEngine !== 'undefined') { GameEngine.init(); }
         });
     </script>
 </body>
