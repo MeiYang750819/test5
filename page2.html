@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="nav.css">
     <script src="game-engine.js"></script>
     <style>
-        /* 🌟 導覽列防變形死鎖 */
         .nav-tabs .tab-btn { white-space: nowrap !important; min-width: max-content !important; }
     </style>
 </head>
@@ -66,9 +65,8 @@
         </details>
 
         <details>
-            <summary class="main-summary" onclick="GameEngine.unlock(event, 'pg2-m-1', 2, '範例對照區域')">👀 範例對照區域</summary>
+            <summary class="main-summary" onclick="GameEngine.unlock(event, 'pg2-m-1', 'large_fold')">👀 範例對照區域</summary>
             <div class="details-body" style="white-space: normal;">
-                
                 <strong style="display: block; font-size: 14px; color: var(--details-textColor); margin-bottom: 8px;">📹 iPhone備忘錄掃描文件操作示範</strong>
                 <figure class="sample-box" style="margin-top: 0; margin-bottom: 15px; padding: 5px;">
                     <video controls preload="metadata" style="max-width: 100%; border-radius: 4px; display: block;">
@@ -111,7 +109,6 @@
                         <figcaption class="sample-cap">❌ 錯誤範例-手入鏡</figcaption>
                     </figure>
                 </div>
-
             </div>
         </details>
     </main>
@@ -122,20 +119,13 @@
     </footer>
 
     <script>
-        const fetchedData = { 
-            companyName: "MYs studio", 
-            team: "外場團隊", 
-            type: "兼職", 
-            userName: "測試員" 
-        };
-
+        const fetchedData = { companyName: "MYs studio", team: "外場團隊", type: "兼職", userName: "測試員" };
         function applyData(data) {
             document.querySelectorAll('.dyn-company').forEach(el => el.innerText = data.companyName);
             document.querySelectorAll('.dyn-team').forEach(el => el.innerText = data.team);
             document.querySelectorAll('.dyn-type').forEach(el => el.innerText = data.type);
             document.querySelectorAll('.dyn-name').forEach(el => el.innerText = data.userName);
         }
-
         function zoomImg(el) {
             const img = el.querySelector('img');
             if(img) {
@@ -143,12 +133,9 @@
                 document.getElementById('lightbox').style.display = 'flex';
             }
         }
-
         window.addEventListener('load', () => { 
             applyData(fetchedData); 
-            if (typeof GameEngine !== 'undefined') { 
-                GameEngine.init(); 
-            }
+            if (typeof GameEngine !== 'undefined') { GameEngine.init(); }
         });
     </script>
 </body>
